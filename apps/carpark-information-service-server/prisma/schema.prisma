@@ -1,0 +1,50 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DB_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Carpark {
+  id                  String            @id @default(cuid())
+  createdAt           DateTime          @default(now())
+  updatedAt           DateTime          @updatedAt
+  carParkNo           String?
+  address             String?
+  xCoord              Float?
+  yCoord              Float?
+  carParkType         String?
+  typeOfParkingSystem String?
+  shortTermParking    String?
+  nightParking        String?
+  carParkDecks        Int?
+  gantryHeight        Float?
+  hasBasement         Boolean?
+  freeParking         String?
+  favoriteCarparks    FavoriteCarpark[]
+}
+
+model FavoriteCarpark {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  user      User?    @relation(fields: [userId], references: [id])
+  userId    String?
+  carpark   Carpark? @relation(fields: [carparkId], references: [id])
+  carparkId String?
+}
+
+model User {
+  id               String            @id @default(cuid())
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  firstName        String?
+  lastName         String?
+  username         String            @unique
+  email            String?           @unique
+  password         String
+  roles            Json
+  favoriteCarparks FavoriteCarpark[]
+}
